@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.16.2",
     "bootstrap": "^3.3.7",
     "coinbase": "^2.0.6",
     "immutable": "^3.8.1",
@@ -10,7 +11,8 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.10",
-    "semantic-ui-react": "^0.71.3"
+    "semantic-ui-react": "^0.71.3",
+    "sha512": "0.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -2,8 +2,10 @@ import React from 'react';
 
 import CoinbaseClient from './data/coinbase';
 import CoinbaseParser from './parsers/coinbase';
-import DataBox from './DataBox';
 import CoinbaseLogo from './logos/coinbase.png';
+
+import BittrexClient from './data/bittrex';
+import DataBox from './DataBox';
 
 import './styles/App.css';
 
@@ -12,7 +14,8 @@ class App extends React.Component {
     super(props);
 
     this.coinbase = new CoinbaseClient();
-    this.state = { coinbase: [] };
+    this.bittrex = new BittrexClient();
+    this.state = { coinbase: [], bittrex: [] };
   }
 
   componentDidMount() {
@@ -22,6 +25,7 @@ class App extends React.Component {
           coinbase: data,
         }),
       );
+    this.bittrex.publicQuery('getmarkets');
   }
 
   render() {
