@@ -1,4 +1,3 @@
-import unirest from 'unirest';
 import sha512 from 'sha512';
 
 class Api {
