@@ -2,8 +2,8 @@
 const Parser = props => (
   props.map(a => ({
     title: a.name,
-    amount: `${a.balance} ${a.currency}`,
-    eur: '0 EUR',
+    amount: `${Math.round(1000 * a.balance) / 1000} ${a.currency}`,
+    eur: parseFloat(a.eur, 10),
   }))
 );
 

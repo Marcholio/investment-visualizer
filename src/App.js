@@ -16,17 +16,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.coinbase.getData(data =>
-      this.setState({
-        coinbase: data,
-      }),
-    );
+    this.coinbase.getData()
+      .then(data =>
+        this.setState({
+          coinbase: data,
+        }),
+      );
   }
 
   render() {
     const coinbaseData = CoinbaseParser(this.state.coinbase);
     return (
-      <div className="App">
+      <div className="App" style={{ padding: '24px' }}>
         <DataBox name={'Coinbase'} rows={coinbaseData} logo={CoinbaseLogo} color={'#0b74c5'} />
       </div>
     );
