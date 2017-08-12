@@ -7,7 +7,10 @@ app.use(cors());
 
 app.options('*');
 app.get('*', (req, res) => {
-  req.pipe(request(`https:/${req.url}`)).pipe(res);
+  if (req.url.startsWith('/https://')) {
+    req.pipe(request(`${req.url}`)).pipe(res);
+  }
 });
 
-app.listen(8080);
+/* eslint-disable no-console */
+app.listen(8080, () => console.log('Proxy started'));
