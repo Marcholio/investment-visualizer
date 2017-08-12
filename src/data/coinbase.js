@@ -19,7 +19,7 @@ class Api {
     });
   }
 
-  getData() {
+  getBalances() {
     return new Promise((resolve) => {
       this.client.getAccounts({}, (err, acc) => {
         const accounts = acc.map(a => (
@@ -42,6 +42,37 @@ class Api {
         ));
         Promise.all(accounts)
           .then((data) => { resolve(data); });
+      });
+    });
+  }
+
+  getInvestedValue() {
+    return new Promise((resolve) => {
+      this.client.getAccounts({}, (error, accounts) => {
+        const data = accounts.map(a =>
+          new Promise(resolveTxs =>
+            a.getTransactions({}, (err, txs) => resolveTxs({ name: a.name, data: txs }))));
+        Promise.all(data)
+          .then((txs) => {
+            const investments = txs.map((t) => {
+              let currentEur = 0;
+              let currentAmount = 0;
+              t.data.reverse().forEach((d) => {
+                const amount = parseFloat(d.amount.amount);
+                if (currentAmount !== 0) {
+                  const multiplier = amount / currentAmount;
+                  currentAmount += amount;
+                  currentEur += currentEur * multiplier;
+                } else {
+                  currentEur = parseFloat(d.native_amount.amount);
+                  currentAmount = amount;
+                }
+              });
+              return currentEur;
+            });
+            const total = investments.reduce((a, b) => a + b, 0);
+            resolve(total);
+          });
       });
     });
   }

@@ -15,24 +15,44 @@ class App extends React.Component {
 
     this.coinbase = new CoinbaseClient();
     this.bittrex = new BittrexClient();
-    this.state = { coinbase: [], bittrex: [] };
+    this.state = {
+      coinbase: {
+        data: [],
+        invested: -1,
+        logo: CoinbaseLogo,
+        color: '#0b74c5',
+      },
+    };
   }
 
   componentDidMount() {
-    this.coinbase.getData()
-      .then(data =>
+    Promise.all([
+      this.coinbase.getBalances(),
+      this.coinbase.getInvestedValue(),
+    ]).then(results =>
         this.setState({
-          coinbase: data,
+          coinbase: Object.assign(
+            this.state.coinbase,
+            {
+              data: CoinbaseParser(results[0]),
+              invested: results[1],
+            }),
         }),
       );
     this.bittrex.publicQuery('getmarkets');
   }
 
   render() {
-    const coinbaseData = CoinbaseParser(this.state.coinbase);
+    const createBox = values => (
+      <DataBox
+        rows={values.data}
+        invested={values.invested}
+        logo={values.logo}
+        color={values.color}
+      />);
     return (
       <div className="App" style={{ padding: '24px' }}>
-        <DataBox name={'Coinbase'} rows={coinbaseData} logo={CoinbaseLogo} color={'#0b74c5'} />
+        {createBox(this.state.coinbase)}
       </div>
     );
   }

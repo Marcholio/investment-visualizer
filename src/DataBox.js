@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Image, Table } from 'semantic-ui-react';
+import { Card, Image, Table, Loader } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 class DataBox extends React.Component {
@@ -8,8 +8,9 @@ class DataBox extends React.Component {
 
     const total = props.rows.map(r => r.eur).reduce((a, b) => a + b, 0);
 
-    this.state = { total, buyPrice: 500 };
+    this.state = { total };
   }
+
   componentWillReceiveProps(nextProps) {
     const total = nextProps.rows.map(r => r.eur).reduce((a, b) => a + b, 0);
     this.setState({ total });
@@ -31,11 +32,11 @@ class DataBox extends React.Component {
     );
 
     const profit = (amount) => {
-      const result = Math.round(((amount / this.state.buyPrice) - 1) * 1000) / 10;
+      const result = Math.round(((amount / this.props.invested) - 1) * 1000) / 10;
       return (
-        this.state.buyPrice < amount ?
+        this.props.invested < amount ?
           <Table.Cell style={{ color: 'green' }}>
-            {`+ ${result}%`}
+            {`+${result}%`}
           </Table.Cell>
           :
           <Table.Cell style={{ color: 'red' }}>
@@ -51,20 +52,24 @@ class DataBox extends React.Component {
             <Image src={this.props.logo} style={{ maxHeight: '20px' }} />
           </Card.Header>
         </Card>
-        <Table striped style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', borderCollapse: 'unset', border: '1px solid #CCC' }}>
-          <Table.Body>
-            {this.props.rows.map(createRow)}
-          </Table.Body>
-          <Table.Footer fullWidth style={{ fontWeight: '700' }}>
-            <Table.Row>
-              <Table.Cell />
-              <Table.Cell>
-                {`${Math.round(this.state.total * 100) / 100} EUR`}
-              </Table.Cell>
-              {profit(this.state.total)}
-            </Table.Row>
-          </Table.Footer>
-        </Table>
+        {this.props.invested !== -1 ?
+          <Table striped style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', borderCollapse: 'unset', border: '1px solid #CCC' }}>
+            <Table.Body>
+              {this.props.rows.map(createRow)}
+            </Table.Body>
+            <Table.Footer fullWidth style={{ fontWeight: '700' }}>
+              <Table.Row>
+                <Table.Cell />
+                <Table.Cell>
+                  {`${Math.round(this.state.total * 100) / 100} EUR`}
+                </Table.Cell>
+                {profit(this.state.total)}
+              </Table.Row>
+            </Table.Footer>
+          </Table>
+        :
+          <Loader size={'large'} />
+        }
       </div>
     );
   }
@@ -74,6 +79,7 @@ DataBox.propTypes = {
   logo: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   rows: PropTypes.arrayOf(PropTypes.any).isRequired,
+  invested: PropTypes.number.isRequired,
 };
 
 export default DataBox;
