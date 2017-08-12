@@ -1,4 +1,5 @@
 import sha512 from 'sha512';
+import axios from 'axios';
 
 class Api {
   constructor() {
@@ -11,13 +12,13 @@ class Api {
     const nonce = new Date().getTime();
     const uri = `${url}?apikey=${this.key}&nonce=${nonce}`;
     const sign = sha512.hmac(this.secret).finalize(uri).toString('hex');
-    unirest.get(uri)
-      .headers({
-        Accept: 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        apisign: sign })
-      .end(res => console.log(res));
+
+    // Use proxy server to get around cors issues
+    axios.get(`http://localhost:8080/${uri.slice(8)}`,
+      { headers: {
+        apisign: sign,
+      },
+      }).then(res => console.log(res));
   }
 
   publicQuery(endpoint) {
