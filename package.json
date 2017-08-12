@@ -16,7 +16,7 @@
     "sha512": "0.0.1"
   },
   "scripts": {
-    "start": "npm run proxy & npm run app",
+    "start": "npm run app & npm run proxy",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

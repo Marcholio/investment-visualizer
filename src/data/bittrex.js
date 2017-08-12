@@ -12,9 +12,10 @@ class Api {
     const nonce = new Date().getTime();
     const uri = `${url}?apikey=${this.key}&nonce=${nonce}`;
     const sign = sha512.hmac(this.secret).finalize(uri).toString('hex');
+    const proxyPort = 8080;
 
     // Use proxy server to get around cors issues
-    axios.get(`http://localhost:8080/${uri.slice(8)}`,
+    axios.get(`http://localhost:${proxyPort}/${uri.slice(8)}`,
       { headers: {
         apisign: sign,
       },
