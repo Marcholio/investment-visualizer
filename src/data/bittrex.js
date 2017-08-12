@@ -14,7 +14,7 @@ class Api {
     const sign = sha512.hmac(this.secret).finalize(uri).toString('hex');
 
     // Use proxy server to get around cors issues
-    axios.get(`https://localhost:8080/${uri.slice(8)}`,
+    axios.get(`http://localhost:8080/${uri.slice(8)}`,
       { headers: {
         apisign: sign,
       },

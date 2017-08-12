@@ -7,9 +7,7 @@ app.use(cors());
 
 app.options('*');
 app.get('*', (req, res) => {
-  if (req.url.startsWith('/https://')) {
-    req.pipe(request(`${req.url}`)).pipe(res);
-  }
+  req.pipe(request(`http:/${req.url}`)).pipe(res);
 });
 
 /* eslint-disable no-console */
