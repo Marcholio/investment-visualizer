@@ -53,7 +53,7 @@ class DataBox extends React.Component {
           </Card.Header>
         </Card>
         {this.props.invested !== -1 ?
-          <Table striped style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', borderCollapse: 'unset', border: '1px solid #CCC' }}>
+          <Table unstackable striped style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', borderCollapse: 'unset', border: '1px solid #CCC' }}>
             <Table.Body>
               {this.props.rows.map(createRow)}
             </Table.Body>
