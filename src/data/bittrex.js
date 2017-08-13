@@ -12,22 +12,18 @@ class Api {
     const nonce = new Date().getTime();
     const uri = `${url}?apikey=${this.key}&nonce=${nonce}`;
     const sign = sha512.hmac(this.secret).finalize(uri).toString('hex');
+    const corsRequestUri = `${uri.slice(8).split('/')[0]}:443/${uri.slice(8).split('/').slice(1).join('/')}`;
 
     // Use proxy server to get around cors issues
-    axios.get(`https://fast-journey-36020.herokuapp.com/${uri.slice(8)}`,
+    axios.get(`https://fast-journey-36020.herokuapp.com/${corsRequestUri}`,
       { headers: {
         apisign: sign,
       },
       }).then(res => console.log(res));
   }
 
-  publicQuery(endpoint) {
-    const url = `${this.baseUrl}public/${endpoint}`;
-    this.query(url);
-  }
-
-  privateQuery(endpoint) {
-    const url = `${this.baseUrl}private/${endpoint}`;
+  getBalances() {
+    const url = `${this.baseUrl}account/getBalances`;
     this.query(url);
   }
 }

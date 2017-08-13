@@ -37,7 +37,7 @@ class Main extends React.Component {
             }),
         }),
       );
-    this.bittrex.publicQuery('getmarkets');
+    this.bittrex.getBalances();
   }
 
   render() {
@@ -49,7 +49,7 @@ class Main extends React.Component {
         color={values.color}
       />);
     return (
-      <div className="App" style={{ padding: '24px' }}>
+      <div>
         {createBox(this.state.coinbase)}
       </div>
     );
