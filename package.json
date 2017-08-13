@@ -15,7 +15,8 @@
     "react-scripts": "1.0.10",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.71.3",
-    "sha512": "0.0.1"
+    "sha512": "0.0.1",
+    "styled-components": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
