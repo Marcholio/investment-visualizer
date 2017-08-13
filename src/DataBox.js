@@ -46,14 +46,14 @@ class DataBox extends React.Component {
     };
 
     return (
-      <div className={'col-lg-4 col-md-6 col-xs-12'}>
-        <Card fluid>
+      <div className={'col-lg-4 col-md-6 col-xs-12'} style={{ margin: '8px 0' }}>
+        <Card fluid style={{ margin: 0 }}>
           <Card.Header style={{ backgroundColor: this.props.color, padding: '8px', display: 'flex', justifyContent: 'center' }}>
             <Image src={this.props.logo} style={{ maxHeight: '20px' }} />
           </Card.Header>
         </Card>
         {this.props.invested !== -1 ?
-          <Table unstackable striped style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', borderCollapse: 'unset', border: '1px solid #CCC' }}>
+          <Table unstackable striped style={{ borderBottomLeftRadius: '8px', borderBottomRightRadius: '8px', borderCollapse: 'unset', border: '1px solid #CCC', margin: 0 }}>
             <Table.Body>
               {this.props.rows.map(createRow)}
             </Table.Body>

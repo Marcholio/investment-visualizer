@@ -5,6 +5,9 @@ import CoinbaseParser from './parsers/coinbase';
 import CoinbaseLogo from './logos/coinbase.png';
 
 import BittrexClient from './data/bittrex';
+import BittrexParser from './parsers/bittrex';
+import BittrexLogo from './logos/bittrex.png';
+
 import DataBox from './DataBox';
 
 class Main extends React.Component {
@@ -19,6 +22,12 @@ class Main extends React.Component {
         invested: -1,
         logo: CoinbaseLogo,
         color: '#0b74c5',
+      },
+      bittrex: {
+        data: [],
+        invested: 1,
+        logo: BittrexLogo,
+        color: '#29323d',
       },
     };
   }
@@ -37,7 +46,19 @@ class Main extends React.Component {
             }),
         }),
       );
-    this.bittrex.getBalances();
+    Promise.all([
+      this.bittrex.getBalances(),
+      this.coinbase.getSpotPrice('BTC'),
+    ]).then(results =>
+      this.setState({
+        bittrex: Object.assign(
+          this.state.bittrex,
+          {
+            data: BittrexParser(results[0], results[1]),
+            invested: 1,
+          }),
+      }),
+    );
   }
 
   render() {
@@ -51,6 +72,7 @@ class Main extends React.Component {
     return (
       <div>
         {createBox(this.state.coinbase)}
+        {createBox(this.state.bittrex)}
       </div>
     );
   }
