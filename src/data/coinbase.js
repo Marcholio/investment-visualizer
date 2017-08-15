@@ -13,7 +13,7 @@ class Api {
   getSpotPrice(currency) {
     return new Promise((resolve, reject) => {
       this.client.getSpotPrice({ currencyPair: `${currency}-EUR` }, (err, price) => {
-        if (!err) resolve(price.data.amount);
+        if (!err) resolve(parseFloat(price.data.amount));
         else reject(err);
       });
     });
@@ -37,11 +37,11 @@ class Api {
               balance: a.balance.amount,
               name: a.name,
               currency: a.balance.currency,
-              eur: a.balance.amount,
+              eur: parseFloat(a.balance.amount),
             })
         ));
         Promise.all(accounts)
-          .then((data) => { resolve(data); });
+          .then((data) => { resolve(data.filter(d => d.balance > 0)); });
       });
     });
   }

@@ -49,13 +49,14 @@ class Main extends React.Component {
     Promise.all([
       this.bittrex.getBalances(),
       this.coinbase.getSpotPrice('BTC'),
+      this.bittrex.getInvestedValue(),
     ]).then(results =>
       this.setState({
         bittrex: Object.assign(
           this.state.bittrex,
           {
             data: BittrexParser(results[0], results[1]),
-            invested: 1,
+            invested: results[2] * results[1],
           }),
       }),
     );

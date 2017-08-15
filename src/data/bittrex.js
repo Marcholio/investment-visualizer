@@ -53,6 +53,87 @@ class Api {
         }),
       );
   }
+
+  getDeposits() {
+    const url = `${this.baseUrl}account/getdeposithistory`;
+    return this.query(url, '');
+  }
+
+  getWithdrawals() {
+    const url = `${this.baseUrl}account/getwithdrawalhistory`;
+    return this.query(url, '');
+  }
+
+  getTransactions() {
+    const url = `${this.baseUrl}account/getorderhistory`;
+    return this.query(url, '');
+  }
+
+  getInvestedValue() {
+    return new Promise(resolve =>
+      Promise.all([
+        this.getDeposits(),
+        this.getWithdrawals(),
+        this.getTransactions(),
+      ]).then((res) => {
+        const deposits = res[0].reduce((map, d) => {
+          if (map[d.Currency]) {
+            return Object.assign(map, { [d.Currency]: map[d.Currency] + d.Amount });
+          }
+          return Object.assign(map, { [d.Currency]: d.Amount });
+        }, { });
+
+        const withdrawals = res[1].reduce((map, d) => {
+          if (map[d.Currency]) {
+            return Object.assign(map, { [d.Currency]: map[d.Currency] + d.Amount });
+          }
+          return Object.assign(map, { [d.Currency]: d.Amount });
+        }, { });
+
+        const changes = Object.keys(withdrawals).reduce((map, key) => {
+          if (map[key]) {
+            return Object.assign(map, { [key]: map[key] - withdrawals[key] });
+          }
+          return Object.assign(map, { [key]: -1 * withdrawals[key] });
+        }, deposits);
+
+        const results = res[2].reduce((map, t) => {
+          const isBuy = t.OrderType.includes('BUY');
+          const currencies = t.Exchange.split('-');
+          const source = isBuy ? currencies[0] : currencies[1];
+          const target = isBuy ? currencies[1] : currencies[0];
+          const sourceObj =
+            map[source] ?
+              { [source]: map[source] - t.Price }
+            :
+              { [source]: -1 * t.Price };
+          const targetObj =
+            map[target] ?
+              { [target]: map[target] + t.Quantity }
+            :
+              { [target]: t.Quantity };
+          return Object.assign(map, sourceObj, targetObj);
+        }, changes);
+
+        const pricePromises = Object.keys(results)
+          .map(k => new Promise(resolvePrice =>
+            this.getSpotPrice(`BTC-${k}`)
+            .then(p => resolvePrice({ [k]: p }),
+          )));
+
+        Promise.all(pricePromises)
+          .then((prices) => {
+            const priceMap = prices.reduce((map, p) => Object.assign(map, p), {});
+            resolve(Object.keys(results).reduce((sum, k) => {
+              if (k === 'BTC') {
+                return sum + results[k];
+              }
+              return sum + (results[k] * parseFloat(priceMap[k].Last));
+            }, 0));
+          });
+      }),
+    );
+  }
 }
 
 export default Api;
