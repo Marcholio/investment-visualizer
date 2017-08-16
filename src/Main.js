@@ -8,6 +8,9 @@ import BittrexClient from './data/bittrex';
 import BittrexParser from './parsers/bittrex';
 import BittrexLogo from './logos/bittrex.png';
 
+import WalletParser from './parsers/wallet';
+import WalletLogo from './logos/wallet.png';
+
 import DataBox from './DataBox';
 
 class Main extends React.Component {
@@ -25,9 +28,15 @@ class Main extends React.Component {
       },
       bittrex: {
         data: [],
-        invested: 1,
+        invested: -1,
         logo: BittrexLogo,
         color: '#29323d',
+      },
+      wallet: {
+        data: [],
+        invested: -1,
+        logo: WalletLogo,
+        color: '#ff9900',
       },
     };
   }
@@ -46,6 +55,7 @@ class Main extends React.Component {
             }),
         }),
       );
+
     Promise.all([
       this.bittrex.getBalances(),
       this.coinbase.getSpotPrice('BTC'),
@@ -57,6 +67,21 @@ class Main extends React.Component {
           {
             data: BittrexParser(results[0], results[1]),
             invested: results[2] * results[1],
+          }),
+      }),
+    );
+
+    Promise.all([
+      this.bittrex.getWithdrawals(),
+      this.bittrex.getSpotPrice('BTC-NEO'),
+      this.coinbase.getSpotPrice('BTC'),
+    ]).then(results =>
+      this.setState({
+        wallet: Object.assign(
+          this.state.wallet,
+          {
+            data: WalletParser(results[0], results[1].Last, results[2]),
+            invested: 1,
           }),
       }),
     );
@@ -74,6 +99,7 @@ class Main extends React.Component {
       <div>
         {createBox(this.state.coinbase)}
         {createBox(this.state.bittrex)}
+        {createBox(this.state.wallet)}
       </div>
     );
   }
