@@ -81,7 +81,7 @@ class Main extends React.Component {
           this.state.wallet,
           {
             data: WalletParser(results[0], results[1].Last, results[2]),
-            invested: 1,
+            invested: 2100,
           }),
       }),
     );

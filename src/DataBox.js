@@ -56,7 +56,7 @@ class DataBox extends React.Component {
           </Table.Cell>
           :
           <Table.Cell style={{ color: 'red' }}>
-            {`${result} %`}
+            {`${result}%`}
           </Table.Cell>
       );
     };
