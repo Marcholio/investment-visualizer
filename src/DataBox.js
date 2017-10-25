@@ -76,7 +76,7 @@ class DataBox extends React.Component {
                 striped
               >
                 <Table.Body>
-                  {this.props.rows.map(createRow)}
+                  {this.props.rows.filter(r => r.eur > 0.1).map(createRow)}
                 </Table.Body>
               </Table>
             </ScrollContainer>
